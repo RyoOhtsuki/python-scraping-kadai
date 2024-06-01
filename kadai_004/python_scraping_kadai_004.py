@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from getpass import getpass
+from selenium.webdriver.common.action_chains import ActionChains
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument('--headless')
@@ -12,55 +13,22 @@ chrome_options.add_argument('--disable-dev-shm-usage')
 
 chrome_driver = webdriver.Chrome(options=chrome_options)
 
-chrome_driver.get('https://terakoya.sejuku.net')
+chrome_driver.get('https://www.nikkei.com/markets/worldidx/chart/nk225/?type=6month')
 
 wait = WebDriverWait(chrome_driver, 30)
-header_login_button = wait.until(
+chart = wait.until(
     EC.visibility_of_element_located(
-        (By.CSS_SELECTOR, '#root > header > div > div > div.sc-bYMpWt.ecQgNh >'
-         'div.sc-jIRcFI.sc-hhOBVt.gREswC.jPXpMh')
+        (By.CLASS_NAME, 'highcharts-series-group')
     )
 )
 
-header_login_button.click()
+chart_width = chart.size['width']
+chart_height = chart.size['height']
 
-email_address = input('email: ')
-password = getpass('password: ')
+actions = ActionChains(chrome_driver)
 
-email_input = chrome_driver.find_element(By.NAME, 'email')
-password_input = chrome_driver.find_element(By.NAME, 'password')
+print(chart.location['x'])
 
-email_input.send_keys(email_address)
-password_input.send_keys(password)
+start_x = chart.location['x'] + chart_width // 2
+start_y = chart.location['y'] + chart_height // 2
 
-form_login_button = wait.until(
-    EC.visibility_of_element_located(
-        (By.CSS_SELECTOR, '#root > div.sc-iBYQkv.cvCael > div.sc-kDvujY.eCJBhf > '
-         'div.sc-eDWCr.dePrRH > button')
-    )
-)
-
-form_login_button.click()
-
-timeline_button = wait.until(
-    EC.visibility_of_element_located(
-        (By.CSS_SELECTOR, 'li[data-e2e="navi-timeline"] a')
-    )
-)
-
-timeline_button.click()
-
-wait.until(
-    EC.visibility_of_element_located(
-        (By.CSS_SELECTOR, 'a[data-e2e="study_reports"]')
-    )
-)
-
-soup = BeautifulSoup(chrome_driver.page_source, 'html.parser')
-
-latest_post = soup.find('a', {'data-e2e': 'study_reports'})
-
-print('Latest post href: ')
-print('https://terakoya.sejuku.net' + latest_post['href'])
-
-chrome_driver.quit()

@@ -4,8 +4,6 @@ from getpass import getpass
 
 api_key = getpass('api_key: ')
 station_name = input('station_name: ')
-#api_key = 'AIzaSyBrs6xH6W4dmfgTSepOiOCVWguCeuAmz04'
-#station_name = '秋葉原'
 
 
 url_location = 'https://maps.googleapis.com/maps/api/geocode/json'
