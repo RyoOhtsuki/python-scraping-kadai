@@ -19,11 +19,9 @@ response = requests.get(
 )
 
 json_data = response.json()
-pprint.pprint(json_data)
 location = json_data['results'][0]['geometry']['location']
 lat = location['lat']
 lng = location['lng']
-print(f'lat: {lat}, lng: {lng}')
 
 url_restaurant = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
 
@@ -38,7 +36,6 @@ response = requests.get(
 )
 
 json_data = response.json()
-pprint.pprint(json_data)
 
 for place in json_data['results']:
     name = place['name']
